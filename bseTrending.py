@@ -14,6 +14,8 @@ for company in allCompanies:
 
 tableRow = soup.find_all('tr')
 
+companyLow = []
+companyClose = []
 companyHigh = []
 for tr in tableRow:
     high = tr.find_all('td', attrs={'width':175, 'align': 'right'})
@@ -24,4 +26,9 @@ for tr in tableRow:
         companyHigh.append(float(i))
         break
 
-print(companyHigh)
+    # low price
+    low = tr.find_all('td', attrs={'width':180, 'align':'right'})
+     
+    for i in low:
+        i = i.text.replace(',', '')
+        print(i)
