@@ -19,6 +19,7 @@ def bseTrending():
     companyLow = []
     companyClose = []
     companyHigh = []
+    companyGain = []
     companyChange = []
     for tr in tableRow:
         # high price
@@ -42,32 +43,34 @@ def bseTrending():
             i = i.text.replace(',', '')
             companyClose.append(float(i))
 
-        # change of price
-        change = tr.find_all('td', attrs={'width': 175, 'align': 'right'})
-        for i in change:
-            if i.has_attr('class'):
-                companyChange.append(float(i.text))
+        # gain
+        gain = tr.find_all(
+            'td', attrs={'width': 45, 'align': 'right', 'class': 'green'})
+        if len(gain) == 0:
+            continue
+        companyGain.append(float(gain[0].text))
 
+        # change
+        change = tr.find_all(
+            'td', attrs={'width': 55, 'align': 'right', 'class': 'green'})
+        if len(change) == 0:
+            continue
+        companyChange.append(float(change[0].text))
 
     companyData = []
 
-    # dictionary containing company stock info
     for i in range(len(companiesList)):
         companyData.append({
             'company': companiesList[i],
-            'high_price': companyHigh[i],
-            'low_price': companyLow[i],
-            'change_percentage': companyChange[i],
-            'close_price': companyClose[i]
+            'high': companyHigh[i],
+            'low': companyLow[i],
+            'change': companyChange[i],
+            'gain_in_per': companyGain[i],
+            'close_in_per': companyClose[i]
         })
 
-    companyData = sorted(
-        companyData, key=lambda i:i['change_percentage'], reverse=True
-    )
-    # clean printing
-    for i in range(len(companyData)):
+    for i in range(len(companiesList)):
         pprint.pprint(companyData[i])
         print(' ')
 
-print('=====================Trending Stocks=====================')
 bseTrending()
